@@ -4,6 +4,7 @@
 #include <sstream>
 #include <fstream>
 
+#define BLOCK_DIM 1024
 #define MAX_DIMS 10
 #define TILE 32
 #define BASE_THREAD_NUM 32
