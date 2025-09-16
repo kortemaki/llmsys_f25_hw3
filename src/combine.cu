@@ -345,7 +345,7 @@ __global__ void reduceKernel(
 
     // 1. Define the position of the output element that this thread or this block will write to
     int idx = blockIdx.x;
-    if (idx >= out_size || threadIdx.x > a_shape[reduce_dim]) return;
+    if (idx >= out_size || threadIdx.x >= a_shape[reduce_dim]) return;
 
     // 2. Convert the out_pos to the out_index according to out_shape
     to_index(idx, out_shape, out_index, shape_size - 1);
@@ -375,11 +375,10 @@ __global__ void reduceKernel(
     }
     cache[threadIdx.x] = out_i;
     //binary reduction to combine threads in the block
-    for (int span = 0; (1 << span) < a_shape[reduce_dim]; span++) {
-      int offset = 1 << span;
+    for (int offset = 1; offset < a_shape[reduce_dim]; offset <<= 1) {
       if (threadIdx.x % offset) return;
 
-      if (threadIdx.x + offset >= a_shape[reduce_dim]) return; // these threads have no sibling
+      if (threadIdx.x + offset > a_shape[reduce_dim]) return; // these threads have no sibling
 
       // reduce with this thread's sibling
       out_i = fn(fn_id, out_i, cache[threadIdx.x + offset]);
@@ -725,7 +724,7 @@ void tensorReduce(
     cudaMemcpy(d_a_strides, a_strides, shape_size * sizeof(int), cudaMemcpyHostToDevice);
 
     int threadsPerBlock = BASE_THREAD_NUM;
-    int blocksPerGrid = (out_size + threadsPerBlock - 1) / threadsPerBlock;
+    int blocksPerGrid = out_size;
     reduceKernel<<<blocksPerGrid, threadsPerBlock>>>(
         d_out, d_out_shape, d_out_strides, out_size,
         d_a, d_a_shape, d_a_strides,
