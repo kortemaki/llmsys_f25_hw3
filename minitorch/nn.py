@@ -211,7 +211,7 @@ def logsumexp(input: Tensor, dim: int) -> Tensor:
             NOTE: minitorch functions/tensor functions typically keep dimensions if you provide a dimensions.
     """
     ### BEGIN ASSIGN3_1
-    return input.exp().sum(dim).log()
+    return input.exp().sum(dim).log().view(*input.shape[:dim], 1, *input.shape[dim+1:])
     ### END ASSIGN3_1
 
 
