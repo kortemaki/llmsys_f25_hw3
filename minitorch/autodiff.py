@@ -137,19 +137,23 @@ def backpropagate(variable: Variable, deriv: Any) -> None:
     No return. Should write to its results to the derivative values of each leaf through `accumulate_derivative`.
     """
     # BEGIN ASSIGN1_1
+    queue = [(variable, deriv)]
 
-    # base case - variable is constant - no derivative to propagate
-    if variable.is_constant():
-        return
-    
-    # base case - variable is a leaf - accumulate deriv here
-    if variable.is_leaf():
-        variable.accumulate_derivative(deriv)
-        return
+    while queue:
+        var, d_part = queue.pop()
 
-    # recursive case - propagate deriv using the chain rule
-    for (var, d_part) in variable.chain_rule(deriv):
-        backpropagate(var, d_part)
+        # base case - variable is constant - no derivative to propagate
+        if var.is_constant():
+            continue
+
+        # base case - variable is a leaf - accumulate deriv here
+        if var.is_leaf():
+            var.accumulate_derivative(d_part)
+            continue
+
+        # recursive case - propagate deriv using the chain rule
+        for (v, d) in var.chain_rule(d_part):
+            queue.append((v, d))
 
     # END ASSIGN1_1
 

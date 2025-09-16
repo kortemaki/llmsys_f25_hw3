@@ -12,9 +12,9 @@ from datasets import load_dataset
 from tqdm import tqdm
 
 from minitorch import SimpleOps
-from minitorch.cuda_kernel_ops import CudaKernelOps
+#from minitorch.cuda_kernel_ops import CudaKernelOps
 BACKEND = minitorch.TensorBackend(SimpleOps)
-CUDA = minitorch.TensorBackend(CudaKernelOps)
+#CUDA = minitorch.TensorBackend(CudaKernelOps)
 
 BATCH = 10
 
@@ -179,7 +179,7 @@ class SentenceSentimentTrain:
         The trainer class of sentence sentiment classification
     '''
     def __init__(self):
-        self.model = Network()
+        self.model = Network(dropout_prob=0.5)
 
     def train(
         self,
@@ -197,7 +197,7 @@ class SentenceSentimentTrain:
         losses = []
         train_accuracy = []
         validation_accuracy = []
-        for epoch in tqdm(range(1, max_epochs + 1), total=max_epochs, unit="epoch"):
+        for epoch in range(1, max_epochs + 1):
             total_loss = 0.0
             n_batches = 0
 
@@ -205,9 +205,9 @@ class SentenceSentimentTrain:
             train_predictions = []
             batch_size = min(batch_size, n_training_samples)
 
-            for batch_num, example_num in tqdm(enumerate(
+            for batch_num, example_num in enumerate(
                 range(0, n_training_samples, batch_size)
-            ), total=math.ceil(n_training_samples/batch_size), unit="batch"):
+            ):
                 out=None
 
                 # BEGIN ASSIGN1_3
@@ -224,8 +224,8 @@ class SentenceSentimentTrain:
                 y = minitorch.tensor(y_train, backend=BACKEND)
 
                 # 2
-                x.requires_grad_(True)
-                y.requires_grad_(True)
+                #x.requires_grad_(True)
+                #y.requires_grad_(True)
 
                 # 3
                 out = model.forward(x)
@@ -261,8 +261,8 @@ class SentenceSentimentTrain:
                 # 4. Obtain the validation accuracy using the get_accuracy function, and add to the validation_accuracy list
 
                 # 1
-                x = minitorch.tensor(X_val, backend=CUDA)
-                y = minitorch.tensor(y_val, backend=CUDA)
+                x = minitorch.tensor(X_val, backend=BACKEND)
+                y = minitorch.tensor(y_val, backend=BACKEND)
 
                 # 2
                 out = model.forward(x)
