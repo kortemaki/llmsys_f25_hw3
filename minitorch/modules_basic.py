@@ -17,8 +17,8 @@ from .tensor_ops import TensorBackend
 from .tensor import Tensor
 
 
-def UniformRandomParameter(w, *shape):
-    r = (2*w)*(minitorch.rand(shape, backend=BACKEND) - w)
+def UniformRandomParameter(backend, w, *shape):
+    r = (2*w)*minitorch.rand(shape, backend=backend) - w
     return minitorch.Parameter(r)
 
 
