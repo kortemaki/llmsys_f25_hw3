@@ -99,7 +99,7 @@ class Linear(Module):
         ### BEGIN ASSIGN3_2
         w = 1/math.sqrt(in_size)
         self.weights = UniformRandomParameter(backend, w, in_size, out_size)
-        self.bias = UniformRandomParameter(backend, w, out_size) if bias else Tensor(backend=backend).zeros(out_size)
+        self.bias = UniformRandomParameter(backend, w, out_size) if bias else None
         ### END ASSIGN3_2
 
 
@@ -114,9 +114,10 @@ class Linear(Module):
         """
         batch, in_size = x.shape
         ### BEGIN ASSIGN3_2
-        return (
+        activation = (
             x.view(batch, in_size) @ self.weights.value.view(in_size, self.out_size)
-        ).view(batch, self.out_size) + self.bias.value
+        ).view(batch, self.out_size)
+        return (activation + self.bias.value) if self.bias is not None else activation
         ### END ASSIGN3_2
 
 
