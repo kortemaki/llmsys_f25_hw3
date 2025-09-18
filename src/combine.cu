@@ -375,7 +375,7 @@ __global__ void reduceKernel(
     }
     cache[threadIdx.x] = out_i;
     //binary reduction to combine threads in the block
-    for (int offset = 1; offset < min(a_shape[reduce_dim], BLOCK_DIM); offset <<= 1) {
+    for (int offset = 1; offset < min(a_shape[reduce_dim], blockDim.x); offset <<= 1) {
       if (threadIdx.x % offset) return;
 
       if (threadIdx.x + offset >= a_shape[reduce_dim]) return; // these threads have no sibling
