@@ -5,7 +5,7 @@ from .autodiff import Context
 from .fast_ops import FastOps
 from .cuda_ops import CudaOps
 from .tensor import Tensor
-from .tensor_functions import Function, rand, tensor, tensor_from_numpy
+from .tensor_functions import Function, Mul, rand, tensor, tensor_from_numpy
 import numpy as np
 import math
 
@@ -227,7 +227,7 @@ def softmax_loss(logits: Tensor, target: Tensor) -> Tensor:
         loss : (minibatch, )
     """
     ### BEGIN ASSIGN3_1
-    z_y_k = logits.backend.mul_zip(logits, one_hot(target, logits.shape[1])).sum(1)
+    z_y_k = Mul.apply(logits, one_hot(target, logits.shape[1])).sum(1)
     result = logsumexp(logits, 1).view(*target.shape) - z_y_k.view(*target.shape)
     ### END ASSIGN3_1
     return result.view(*target.shape)
