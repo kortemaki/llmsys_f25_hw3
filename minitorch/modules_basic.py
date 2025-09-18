@@ -98,11 +98,10 @@ class Linear(Module):
         self.out_size = out_size
         ### BEGIN ASSIGN3_2
         w = 1/math.sqrt(in_size)
-        self._parameters['weights'] = self.weights = UniformRandomParameter(backend, w, in_size, out_size)
+        self.weights = UniformRandomParameter(backend, w, in_size, out_size)
         self.bias = UniformRandomParameter(backend, w, out_size) if bias else Tensor(backend=backend).zeros(out_size)
-        if bias:
-            self._parameters['bias'] = self.bias
         ### END ASSIGN3_2
+
 
     def forward(self, x: Tensor):
         """Applies a linear transformation to the incoming data.
