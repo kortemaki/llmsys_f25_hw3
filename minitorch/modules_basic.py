@@ -5,6 +5,9 @@ Sequential
 Embedding
 
 """
+import math
+from typing import Any, Dict, Optional, Sequence, Tuple
+
 import numpy as np
 
 from .module import Module, Parameter
@@ -12,8 +15,6 @@ from .tensor_functions import (zeros, ones, rand, tensor, tensor_from_numpy, zer
 from .nn import one_hot
 from .tensor_ops import TensorBackend
 from .tensor import Tensor
-
-from typing import Any, Dict, Optional, Sequence, Tuple
 
 
 def UniformRandomParameter(w, *shape):
@@ -96,7 +97,7 @@ class Linear(Module):
         """
         self.out_size = out_size
         ### BEGIN ASSIGN3_2
-        w = 1/sqrt(in_size)
+        w = 1/math.sqrt(in_size)
         self._parameters['weights'] = self.weights = UniformRandomParameter(backend, w, in_size, out_size)
         self.bias = UniformRandomParameter(backend, w, out_size) if bias else Tensor(backend=backend).zeros(out_size)
         if bias:
