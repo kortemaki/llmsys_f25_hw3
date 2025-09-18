@@ -18,8 +18,8 @@ from .tensor import Tensor
 
 
 def UniformRandomParameter(backend, w, *shape):
-    r = (2*w)*minitorch.rand(shape, backend=backend) - w
-    return minitorch.Parameter(r)
+    r = (2*w)*rand(shape, backend=backend) - w
+    return Parameter(r)
 
 
 class Embedding(Module):
