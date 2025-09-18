@@ -349,7 +349,7 @@ __global__ void reduceKernel(
 
     // 2. Convert the out_pos to the out_index according to out_shape
     to_index(idx, out_shape, out_index, shape_size - 1);
-    for (int i = 0; i < shape_size - 1; i++) {
+        for (int i = 0; i < shape_size - 1; i++) {
         if (out_index[i] >= out_shape[i]) {
           return;
       }
@@ -375,10 +375,10 @@ __global__ void reduceKernel(
     }
     cache[threadIdx.x] = out_i;
     //binary reduction to combine threads in the block
-    for (int offset = 1; offset < a_shape[reduce_dim]; offset <<= 1) {
+    for (int offset = 1; offset < min(a_shape[reduce_dim], BLOCK_DIM); offset <<= 1) {
       if (threadIdx.x % offset) return;
 
-      if (threadIdx.x + offset > a_shape[reduce_dim]) return; // these threads have no sibling
+      if (threadIdx.x + offset >= a_shape[reduce_dim]) return; // these threads have no sibling
 
       // reduce with this thread's sibling
       out_i = fn(fn_id, out_i, cache[threadIdx.x + offset]);
