@@ -158,5 +158,7 @@ class LayerNorm1d(Module):
         """
         batch, dim = x.shape
         ### BEGIN ASSIGN3_2
-        return x @ self.weights.value.view(dim) + self.bias.value
+        difs = x - x.mean(1)
+        var_sq = (difs ** 2).sum()/dim + self.eps
+        return (difs / (var_sq ** 0.5)) * self.weights.value + self.bias.value
         ### END ASSIGN3_2
