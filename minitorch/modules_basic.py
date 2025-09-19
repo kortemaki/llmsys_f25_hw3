@@ -77,9 +77,11 @@ class Dropout(Module):
             output : Tensor of shape (*)
         """
         ### BEGIN ASSIGN3_2
-        if not self.training:
+        if not self.training or self.p_dropout <= 0:
             return x
-        return Mul.apply(x, LT.apply(rand(x.shape, backend=x.backend), (1 - self.p_dropout)))
+        if self.p_dropout >= 1:
+            return x.zeros()
+        return Mul.apply(x, LT.apply(rand(x.shape, backend=x.backend), tensor(1 - self.p_dropout)))
         ### END ASSIGN3_2
 
 
