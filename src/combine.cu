@@ -353,21 +353,12 @@ __global__ void reduceKernel(
       if (out_index[i] >= out_shape[i]) {
         return;
       }
-      //if (threadIdx.x == 0) {
-      //  printf("\nReducing idx %d, out_index[%d]=%d\n", idx, i, out_index[i]);
-      //}
     }
     int out_position = index_to_position(out_index, out_strides, shape_size);
 
     // 3. Initialize the reduce_value to the output element
     for (int i = 0; i < shape_size; i++) {
-      if (i == reduce_dim) {
-        a_index[i] = threadIdx.x;
-      //} else if (i < reduce_dim) {
-      //  a_index[i] = out_index[i];
-      } else {
-        a_index[i] = out_index[i];
-      }
+      a_index[i] = out_index[i];
     }
     float out_i = reduce_value;
 
@@ -375,7 +366,6 @@ __global__ void reduceKernel(
     // linear reduction of the values assigned to the thread
     for (a_index[reduce_dim] = threadIdx.x; a_index[reduce_dim] < a_shape[reduce_dim]; a_index[reduce_dim] += blockDim.x) {
       out_i = fn(fn_id, out_i, a_storage[index_to_position(a_index, a_strides, shape_size)]);
-      //printf("Reducing out_position %d, thread %d, a_storage %f\n", out_position, threadIdx.x, out_i);
     }
     cache[threadIdx.x] = out_i;
     //binary reduction to combine threads in the block
@@ -389,7 +379,6 @@ __global__ void reduceKernel(
       cache[threadIdx.x] = out_i;
       __syncthreads();
     }
-    //printf("Reduced idx %d out_position %d\n", idx, out_position);
     // 5. Write the reduced value to out memory
     out[out_position] = out_i;
 }
