@@ -79,7 +79,7 @@ class Dropout(Module):
         ### BEGIN ASSIGN3_2
         if not self.training:
             return x
-        return Mul.apply(x, LT.apply(rand(x.shape, backend=x.backend), (1 - p_dropout)))
+        return Mul.apply(x, LT.apply(rand(x.shape, backend=x.backend), (1 - self.p_dropout)))
         ### END ASSIGN3_2
 
 
