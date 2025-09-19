@@ -11,7 +11,7 @@ from typing import Any, Dict, Optional, Sequence, Tuple
 import numpy as np
 
 from .module import Module, Parameter
-from .tensor_functions import (Mul, LT, zeros, ones, rand, tensor, tensor_from_numpy, zeros_tensor_from_numpy, ones_tensor_from_numpy)
+from .tensor_functions import (Mul, LT, View, zeros, ones, rand, tensor, tensor_from_numpy, zeros_tensor_from_numpy, ones_tensor_from_numpy)
 from .nn import one_hot
 from .tensor_ops import TensorBackend
 from .tensor import Tensor
@@ -39,7 +39,7 @@ class Embedding(Module):
         self.num_embeddings = num_embeddings # Vocab size
         self.embedding_dim  = embedding_dim  # Embedding Dimension
         ### BEGIN ASSIGN3_2
-        self.weights = Parameter(tensor_from_numpy(np.random.normal(0, 1, (num_embeddings, embedding_dim)), backend=backend))
+        self.weights = Parameter(tensor_from_numpy(np.random.normal(0, 1, (num_embeddings, embedding_dim)), backend=backend, requires_grad=True))
         ### END ASSIGN3_2
 
     def forward(self, x: Tensor):
@@ -53,7 +53,9 @@ class Embedding(Module):
         """
         bs, seq_len = x.shape
         ### BEGIN ASSIGN3_2
-        return one_hot(x, self.num_embeddings) @ zeros((bs, *self.weights.shape)).expand(self.weights.value)
+        # flatten sequences for lookup
+        lookups = one_hot(x.view(bs * seq_len), self.num_embeddings) @ self.weights.value
+        return lookups.view(bs, seq_len, self.embedding_dim)
         ### END ASSIGN3_2
 
 
