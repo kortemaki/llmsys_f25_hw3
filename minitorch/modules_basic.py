@@ -81,7 +81,7 @@ class Dropout(Module):
             return x
         if self.p_dropout >= 1:
             return x.zeros()
-        return Mul.apply(x, LT.apply(rand(x.shape, backend=x.backend), tensor(1 - self.p_dropout)))
+        return Mul.apply(x * 1/(1 - self.p_dropout), -LT.apply(rand(x.shape, backend=x.backend), tensor(self.p_dropout)) + tensor(1))
         ### END ASSIGN3_2
 
 
