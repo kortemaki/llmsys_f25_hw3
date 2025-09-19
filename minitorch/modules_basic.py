@@ -11,7 +11,7 @@ from typing import Any, Dict, Optional, Sequence, Tuple
 import numpy as np
 
 from .module import Module, Parameter
-from .tensor_functions import (zeros, ones, rand, tensor, tensor_from_numpy, zeros_tensor_from_numpy, ones_tensor_from_numpy)
+from .tensor_functions import (Mul, LT, zeros, ones, rand, tensor, tensor_from_numpy, zeros_tensor_from_numpy, ones_tensor_from_numpy)
 from .nn import one_hot
 from .tensor_ops import TensorBackend
 from .tensor import Tensor
