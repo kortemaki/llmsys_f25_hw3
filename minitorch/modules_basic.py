@@ -81,13 +81,7 @@ class Dropout(Module):
             return x
         if self.p_dropout >= 1:
             return x.zeros()
-        return Mul.apply(
-            x * 1/(1 - self.p_dropout),
-            tensor_from_numpy(
-                np.random.binomial(1, 1 - self.p_dropout, x.shape),
-                backend=x.backend,
-            ),
-        )
+        return Mul.apply(x * 1/(1 - self.p_dropout), np.random.binomial(1, 1 - self.p_dropout, x.shape))
         ### END ASSIGN3_2
 
 
@@ -147,7 +141,8 @@ class LayerNorm1d(Module):
         self.dim = dim
         self.eps = eps
         ### BEGIN ASSIGN3_2
-        raise NotImplementedError
+        self.weights = Parameter(ones((dim,), backend=backend))
+        self.bias = Parameter(zeros((dim,), backend=backend))
         ### END ASSIGN3_2
 
     def forward(self, x: Tensor) -> Tensor:
@@ -163,5 +158,5 @@ class LayerNorm1d(Module):
         """
         batch, dim = x.shape
         ### BEGIN ASSIGN3_2
-        raise NotImplementedError
+        return x @ self.weights.value.view(dim) + self.bias.value
         ### END ASSIGN3_2
