@@ -348,22 +348,25 @@ __global__ void reduceKernel(
     if (idx >= out_size || threadIdx.x >= a_shape[reduce_dim]) return;
 
     // 2. Convert the out_pos to the out_index according to out_shape
-    to_index(idx, out_shape, out_index, shape_size - 1);
-        for (int i = 0; i < shape_size - 1; i++) {
-        if (out_index[i] >= out_shape[i]) {
-          return;
+    to_index(idx, out_shape, out_index, shape_size);
+    for (int i = 0; i < shape_size; i++) {
+      if (out_index[i] >= out_shape[i]) {
+        return;
       }
+      //if (threadIdx.x == 0) {
+      //  printf("\nReducing idx %d, out_index[%d]=%d\n", idx, i, out_index[i]);
+      //}
     }
-    int out_position = index_to_position(out_index, out_strides, shape_size - 1);
+    int out_position = index_to_position(out_index, out_strides, shape_size);
 
     // 3. Initialize the reduce_value to the output element
     for (int i = 0; i < shape_size; i++) {
       if (i == reduce_dim) {
         a_index[i] = threadIdx.x;
-      } else if (i < reduce_dim) {
-        a_index[i] = out_index[i];
+      //} else if (i < reduce_dim) {
+      //  a_index[i] = out_index[i];
       } else {
-        a_index[i] = out_index[i - 1];
+        a_index[i] = out_index[i];
       }
     }
     float out_i = reduce_value;
@@ -372,6 +375,7 @@ __global__ void reduceKernel(
     // linear reduction of the values assigned to the thread
     for (a_index[reduce_dim] = threadIdx.x; a_index[reduce_dim] < a_shape[reduce_dim]; a_index[reduce_dim] += blockDim.x) {
       out_i = fn(fn_id, out_i, a_storage[index_to_position(a_index, a_strides, shape_size)]);
+      //printf("Reducing out_position %d, thread %d, a_storage %f\n", out_position, threadIdx.x, out_i);
     }
     cache[threadIdx.x] = out_i;
     //binary reduction to combine threads in the block
@@ -385,7 +389,7 @@ __global__ void reduceKernel(
       cache[threadIdx.x] = out_i;
       __syncthreads();
     }
-
+    //printf("Reduced idx %d out_position %d\n", idx, out_position);
     // 5. Write the reduced value to out memory
     out[out_position] = out_i;
 }
@@ -476,7 +480,6 @@ __global__ void zipKernel(
 
     // 7.Calculate the position of element in b_array according to b_index and b_strides
     int b_position = index_to_position(b_index, b_strides, b_shape_size);
-
 
     // 8. Apply the binary function to the input elements in a_array & b_array and write the output to the out memory
     out[out_position] = fn(fn_id, a_storage[a_position], b_storage[b_position]);
