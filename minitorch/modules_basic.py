@@ -39,7 +39,7 @@ class Embedding(Module):
         self.num_embeddings = num_embeddings # Vocab size
         self.embedding_dim  = embedding_dim  # Embedding Dimension
         ### BEGIN ASSIGN3_2
-        raise NotImplementedError
+        self.weight = Parameter(tensor_from_numpy(np.random.normal(0, 1, (num_embeddings, embedding_dim)), backend=backend))
         ### END ASSIGN3_2
 
     def forward(self, x: Tensor):
@@ -53,7 +53,7 @@ class Embedding(Module):
         """
         bs, seq_len = x.shape
         ### BEGIN ASSIGN3_2
-        raise NotImplementedError
+        return one_hot(x, self.num_embeddings) * self.weight
         ### END ASSIGN3_2
 
 
