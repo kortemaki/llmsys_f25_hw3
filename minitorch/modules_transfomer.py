@@ -132,6 +132,7 @@ class MultiHeadAttention(Module):
         return (
             (softmax(attention, dim=1) @ v)
             .permute(0, 2, 1, 3)
+            .contiguous()
             .view(batch_size, seq_len, self.n_embd)
         )
         ### END ASSIGN3_3
