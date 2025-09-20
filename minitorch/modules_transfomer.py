@@ -88,19 +88,19 @@ class MultiHeadAttention(Module):
         batch_size, seq_len, n_embd = x.shape
         ### BEGIN ASSIGN3_3
         q = (
-            self.q_projection(x.view(batch_size*seq_len, n_embd))
+            self.q_projection(x.view(batch_size * seq_len, n_embd))
             .view(batch_size, seq_len, n_embd)
             .view(batch_size, seq_len, self.n_head, self.attn_hidden_dim)
             .permute(0, 2, 1, 3)
         )
         kT = (
-            self.k_projection(x.view(batch_size*seq_len, n_embd))
+            self.k_projection(x.view(batch_size * seq_len, n_embd))
             .view(batch_size, seq_len, n_embd)
             .view(batch_size, seq_len, self.n_head, self.attn_hidden_dim)
             .permute(0, 2, 3, 1)
         )
         v = (
-            self.v_projection(x.view(batch_size*seq_len, n_embd))
+            self.v_projection(x.view(batch_size * seq_len, n_embd))
             .view(batch_size, seq_len, n_embd)
             .view(batch_size, seq_len, self.n_head, self.attn_hidden_dim)
             .permute(0, 2, 1, 3)
@@ -151,7 +151,8 @@ class MultiHeadAttention(Module):
         ### BEGIN ASSIGN3_3
         q_k_v = self.project_to_query_key_value(x)
         activation = self.self_attention(*q_k_v)
-        return self.Dropout(self.out_projection(activation))
+        output = self.out_projection(activation.view(batch_size * seq_len, n_embd))
+        return self.Dropout(output.view(batch_size, seq_len, n_embd))
         ### END ASSIGN3_3
 
 
