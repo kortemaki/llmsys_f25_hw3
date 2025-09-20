@@ -1,3 +1,4 @@
+import math
 import numpy as np
 from .tensor import tensor, tensor_from_numpy
 from .module import Module, Parameter
@@ -129,7 +130,7 @@ class MultiHeadAttention(Module):
         if self.causal:
             attention += self.create_causal_mask(seq_len)
         return (
-            (softmax(attention) @ v)
+            (softmax(attention, dim=1) @ v)
             .permute(0, 2, 1, 3)
             .view(batch_size, seq_len, self.n_embd)
         )
