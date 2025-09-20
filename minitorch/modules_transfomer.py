@@ -192,7 +192,16 @@ class FeedForward(Module):
 
 
 class TransformerLayer(Module):
-    def __init__(self, n_embd: int, n_head: int, p_dropout: float=0.1, ln_eps: float=1e-5, bias: bool=True, backend: TensorBackend=None):
+    def __init__(
+        self,
+        n_embd: int,
+        n_head: int,
+        p_dropout: float=0.1,
+        ln_eps: float=1e-5,
+        bias: bool=True,
+        backend: TensorBackend=None,
+        ff_hidden_dim: int=256,
+    ):
         super().__init__()
         """
         Initialize a transformer layer with pre-layer normalization.
@@ -213,9 +222,22 @@ class TransformerLayer(Module):
         """
         ### BEGIN ASSIGN3_3
         self.ln_1 = LayerNorm1d(dim=n_embd, eps=ln_eps, backend=backend)
-        self.ln_2 =
-        self.attention =
-        self.ff =
+        self.ln_2 = LayerNorm1d(dim=n_embd, eps=ln_eps, backend=backend)
+        self.attention = MultiHeadAttention(
+            n_embd=n_embd,
+            n_head=n_head,
+            causal=True,
+            p_dropout=p_dropout,
+            bias=bias,
+            backend=backend,
+        )
+        self.ff = FeedForward(
+            n_embd=n_embd,
+            middle_dim=ff_hidden_dim,
+            p_dropout=p_dropout,
+            bias=bias,
+            backend=backend,
+        )
         ### END ASSIGN3_3
 
     def forward(self, x):
@@ -230,7 +252,8 @@ class TransformerLayer(Module):
         """
         batch_size, seq_len, n_embd = x.shape
         ### BEGIN YOUR SOLUTION
-        raise NotImplementedError
+        activation = self.attention.forward(self.ln_1.forward(x))
+        return self.ff.forward(self.ln_2(activation))
         ### END YOUR SOLUTION
 
 
