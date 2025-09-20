@@ -1,6 +1,6 @@
 # Assignment 3: Transformer Architecture
 
-We will continue adding modules to miniTorch framework. 
+We will continue adding modules to miniTorch framework.
 In this assignment, students will implement a decoder-only transformer architecture (GPT-2), train it on machine translation task (IWSLT14 German-English), and benchmark their implementation.
 
 
@@ -110,9 +110,9 @@ Compile your CUDA kernels by running:
 
 ```bash
 bash compile_cuda.sh
-``` 
+```
 
---- 
+---
 
 
 ## Implementing a Decoder-only Transformer Model
@@ -166,7 +166,7 @@ python -m pytest -l -v -k "test_softmax_loss_student"
 Here are the modules you need to implement in `minitorch/modules_basic.py`:
 
 1. **`Linear`**: You can use your implementation from Assignment 1 but adapt it slightly to account for the new `backend` argument.
-   
+
 2. **`Dropout`**: Applies dropout.  
    **Note**: If the flag `self.training` is false, do not zero out any values in the input tensor. To match the autograder seed, please use `np.random.binomial` to generate a mask.
 
@@ -207,7 +207,7 @@ GPT-2 implements multi-head attention, meaning each $\(K, Q, V\)$ tensor formed 
     - $\(Q \in R^{B×S×h×D_h}\)$ gets permuted to $\(Q \in R^{B×h×S×D_h}\)$
 
     Note: You'll do the same for the $\(V\)$ matrix and take care to transpose $\(K\)$ along the last two dimensions.
-  
+
 2. Computing Self-Attention
 
     Let $\(Q_i\)$, $\(K_i\)$, $\(V_i\)$ be the Queries, Keys, and Values for head $\(i\)$. You'll need to compute:
@@ -251,7 +251,7 @@ For more details, refer to [On Layer Normalization in the Transformer Architectu
 *(Image from [Transformer Decoder](https://arxiv.org/pdf/1706.03762.pdf))*  
 
 
-Combine all components to create the final model. Given an input tensor $\(X\)$ with shape 
+Combine all components to create the final model. Given an input tensor $\(X\)$ with shape
 $\((\text{batch size}, \text{sequence length})\)$:
 
 1. Retrieve token and positional embeddings for \(X\).
@@ -324,4 +324,3 @@ The outputs and BLEU scores will be saved in `./workdir_vocab10000_lr0.02_embd25
 
 ### Submission
 Please submit the whole `llmsys_s25_hw2` as a zip on Canvas. Your code will be automatically compiled and gra ded with private test cases.
-
