@@ -169,7 +169,9 @@ class FeedForward(Module):
             dropout (Dropout): Dropout layer
         """
         ### BEGIN ASSIGN3_3
-        raise NotImplementedError
+        self.linear_in = Linear(n_embd, middle_dim, bias)
+        self.linear_out = Linear(n_embd, middle_dim, bias)
+        self.dropout = Dropout(p_dropout)
         ### END ASSIGN3_3
 
     def forward(self, x):
@@ -185,10 +187,8 @@ class FeedForward(Module):
         batch_size, seq_len, n_embd = x.shape
 
         ### BEGIN ASSIGN3_3
-        raise NotImplementedError
+        return self.Dropout(self.linear_out(GELU(self.linear_in(x))))
         ### END ASSIGN3_3
-
-        return x
 
 
 class TransformerLayer(Module):
