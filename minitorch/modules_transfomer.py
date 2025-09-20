@@ -45,10 +45,10 @@ class MultiHeadAttention(Module):
         self.attn_hidden_dim = n_embd // n_head
 
         ### BEGIN ASSIGN3_3
-        self.q_projection = Linear(n_embd, n_embd, False)
-        self.k_projection = Linear(n_embd, n_embd, False)
-        self.v_projection = Linear(n_embd, n_embd, False)
-        self.out_projection = Linear(n_embd, n_embd, True)
+        self.q_projection = Linear(n_embd, n_embd, False, backend)
+        self.k_projection = Linear(n_embd, n_embd, False, backend)
+        self.v_projection = Linear(n_embd, n_embd, False, backend)
+        self.out_projection = Linear(n_embd, n_embd, True, backend)
         self.dropout = Dropout(p_dropout)
         ### END ASSIGN3_3
 
@@ -169,8 +169,8 @@ class FeedForward(Module):
             dropout (Dropout): Dropout layer
         """
         ### BEGIN ASSIGN3_3
-        self.linear_in = Linear(n_embd, middle_dim, bias)
-        self.linear_out = Linear(n_embd, middle_dim, bias)
+        self.linear_in = Linear(n_embd, middle_dim, bias, backend)
+        self.linear_out = Linear(n_embd, middle_dim, bias, backend)
         self.dropout = Dropout(p_dropout)
         ### END ASSIGN3_3
 
@@ -212,11 +212,10 @@ class TransformerLayer(Module):
             ff (FeedForward): Feed-forward network layer
         """
         ### BEGIN ASSIGN3_3
-        raise NotImplementedError
-        # self.ln_1 =
-        # self.ln_2 =
-        # self.attention =
-        # self.ff =
+        self.ln_1 = LayerNorm1d(dim=n_embd, eps=ln_eps, backend=backend)
+        self.ln_2 =
+        self.attention =
+        self.ff =
         ### END ASSIGN3_3
 
     def forward(self, x):
