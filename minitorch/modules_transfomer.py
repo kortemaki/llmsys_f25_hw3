@@ -152,7 +152,7 @@ class MultiHeadAttention(Module):
         q_k_v = self.project_to_query_key_value(x)
         activation = self.self_attention(*q_k_v)
         output = self.out_projection(activation.view(batch_size * seq_len, n_embd))
-        return self.Dropout(output.view(batch_size, seq_len, n_embd))
+        return self.dropout(output.view(batch_size, seq_len, n_embd))
         ### END ASSIGN3_3
 
 
