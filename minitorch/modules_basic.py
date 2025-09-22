@@ -83,7 +83,10 @@ class Dropout(Module):
             return x
         if self.p_dropout >= 1:
             return x.zeros()
-        return Mul.apply(x * 1/(1 - self.p_dropout), np.random.binomial(1, 1 - self.p_dropout, x.shape))
+        return Mul.apply(
+            x * 1/(1 - self.p_dropout),
+            tensor_from_numpy(np.random.binomial(1, 1 - self.p_dropout, x.shape), backend=x.backend)
+        )
         ### END ASSIGN3_2
 
 
