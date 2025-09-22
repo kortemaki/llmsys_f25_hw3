@@ -49,7 +49,7 @@ class MultiHeadAttention(Module):
         self.q_projection = Linear(n_embd, n_embd, False, backend)
         self.k_projection = Linear(n_embd, n_embd, False, backend)
         self.v_projection = Linear(n_embd, n_embd, False, backend)
-        self.out_projection = Linear(n_embd, n_embd, True, backend)
+        self.out_projection = Linear(n_embd, n_embd, False, backend)
         self.dropout = Dropout(p_dropout)
         ### END ASSIGN3_3
 
@@ -130,7 +130,7 @@ class MultiHeadAttention(Module):
         if self.causal:
             attention += self.create_causal_mask(seq_len)
         return (
-            (softmax(attention, dim=1) @ v)
+            (softmax(attention, dim=2) @ v)
             .permute(0, 2, 1, 3)
             .contiguous()
             .view(batch_size, seq_len, self.n_embd)
