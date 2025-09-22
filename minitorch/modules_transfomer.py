@@ -89,19 +89,19 @@ class MultiHeadAttention(Module):
         ### BEGIN ASSIGN3_3
         q = (
             self.q_projection(x.view(batch_size * seq_len, n_embd))
-            .view(batch_size, seq_len, n_embd)
+            #.view(batch_size, seq_len, n_embd)
             .view(batch_size, seq_len, self.n_head, self.attn_hidden_dim)
             .permute(0, 2, 1, 3)
         )
         kT = (
             self.k_projection(x.view(batch_size * seq_len, n_embd))
-            .view(batch_size, seq_len, n_embd)
+            #.view(batch_size, seq_len, n_embd)
             .view(batch_size, seq_len, self.n_head, self.attn_hidden_dim)
             .permute(0, 2, 3, 1)
         )
         v = (
             self.v_projection(x.view(batch_size * seq_len, n_embd))
-            .view(batch_size, seq_len, n_embd)
+            #.view(batch_size, seq_len, n_embd)
             .view(batch_size, seq_len, self.n_head, self.attn_hidden_dim)
             .permute(0, 2, 1, 3)
         )
@@ -126,11 +126,11 @@ class MultiHeadAttention(Module):
         assert q_dim == k_dim == v_dim
 
         ### BEGIN ASSIGN3_3
-        attention = (q @ kT) / math.sqrt(self.attn_hidden_dim)
+        attention = (q @ kT) / tensor([math.sqrt(k_dim)], backend=q.backend)
         if self.causal:
             attention += self.create_causal_mask(seq_len)
         return (
-            (softmax(attention, dim=2) @ v)
+            (softmax(attention, dim=3) @ v)
             .permute(0, 2, 1, 3)
             .contiguous()
             .view(batch_size, seq_len, self.n_embd)
