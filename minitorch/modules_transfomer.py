@@ -402,9 +402,9 @@ class DecoderLM(Module):
         # 6
         activation = self.ln(
             activation.view(batch_size * seq_len, self.n_embd)
-        ).view(batch_size, seq_len, self.n_embd)
+        )
 
         # 7
-        return self.lm_head(activation)
+        return self.lm_head(activation).view(batch_size, seq_len, self.n_vocab)
 
         ### END ASSIGN3_3
