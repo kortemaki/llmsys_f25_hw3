@@ -266,7 +266,7 @@ class TransformerLayer(Module):
         return self.ff(
             self.ln_2(activation.view(batch_size * seq_len, n_embd))
             .view(batch_size, seq_len, n_embd)
-        ) + x  # residual connection
+        ) + activation  # residual connection
         ### END YOUR SOLUTION
 
 
