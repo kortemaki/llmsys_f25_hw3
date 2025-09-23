@@ -255,8 +255,14 @@ class TransformerLayer(Module):
         """
         batch_size, seq_len, n_embd = x.shape
         ### BEGIN YOUR SOLUTION
-        activation = self.attention(self.ln_1(x))
-        return self.ff(self.ln_2(activation) + x) + x
+        activation = self.attention(
+            self.ln_1(x.view(batch_size*seq_len, n_embd))
+            .view(batch_size, seq_len, n_embd)
+        )
+        return self.ff(
+            self.ln_2(activation.view(batch_size*seq_len, n_embd))
+            .view(batch_size, seq_len, n_embd) + x  # residual connection
+        ) + x  # residual connection
         ### END YOUR SOLUTION
 
 
