@@ -173,7 +173,7 @@ class FeedForward(Module):
         """
         ### BEGIN ASSIGN3_3
         self.linear_in = Linear(n_embd, middle_dim, bias, backend)
-        self.linear_out = Linear(n_embd, middle_dim, bias, backend)
+        self.linear_out = Linear(middle_dim, n_embd, bias, backend)
         self.dropout = Dropout(p_dropout)
         ### END ASSIGN3_3
 
