@@ -304,7 +304,7 @@ def generate(
             # run the model with current token_ids, and predict the next token (gen_id)
             # hint: obtain the logits of next token, and take the argmax.
             logits = model(
-                minitorch.tensor(token_ids, backend=backend)
+                minitorch.tensor([token_ids], backend=backend)
             ).to_numpy()[0][-1]
             gen_id = max(range(logits.shape[-1]), key=logits.__get__)
             # END ASSIGN3_4
