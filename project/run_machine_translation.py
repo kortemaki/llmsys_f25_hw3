@@ -19,7 +19,7 @@ from minitorch.cuda_kernel_ops import CudaKernelOps
 def get_dataset(dataset_name, model_max_length):
     """
     Load and preprocess IWSLT (de-en) dataset.
-    
+
     Args:
         dataset_name (str): Name of the dataset to load
         model_max_length (int): Maximum sequence length for filtering examples
@@ -56,7 +56,7 @@ def get_dataset(dataset_name, model_max_length):
 def get_tokenizer(examples, vocab_size, src_key, tgt_key, workdir):
     """
     Train and save a ByteLevelBPETokenizer on the provided dataset.
-    
+
     Args:
         examples (list): Dataset examples for tokenizer training
         vocab_size (int): Desired vocabulary size
@@ -93,7 +93,7 @@ def collate_batch(
         examples, src_key, tgt_key, tokenizer, model_max_length, backend):
     """
     Prepare a batch of examples for model training or evaluation.
-    
+
     Args:
         examples (list): List of examples to process
         src_key (str): Key for source texts in examples
@@ -107,7 +107,7 @@ def collate_batch(
             - input_ids: Tokenized input sequences of shape (batch_size, model_max_length-1)
             - labels: Target sequences of shape (batch_size, model_max_length-1)
             - label_token_weights: Weight mask for loss computation of shape (batch_size, model_max_length-1)
-            
+
     Note:
         input_ids format: <de_tokens> + <de_eos> + <en_tokens> + <en_eos> + <pad>
         labels: Next tokens to predict (shifted by 1)
@@ -143,7 +143,7 @@ def collate_batch(
     input_ids = minitorch.tensor_from_numpy(input_ids, backend=backend)
     labels    = minitorch.tensor_from_numpy(labels, backend=backend)
     label_token_weights = minitorch.tensor_from_numpy(label_token_weights, backend=backend)
-    
+
     # input_ids = token_ids[:, :-1].tolist()
     # labels    = token_ids[:, 1:].tolist()
     # label_token_weights = tgt_token_mask[:, 1:].tolist()
@@ -162,7 +162,7 @@ def collate_batch(
 def loss_fn(batch, model):
     """
     Compute MLE loss for a batch of examples.
-    
+
     Args:
         batch (dict): Batch data containing 'input_ids', 'labels', 'label_token_weights'
         model (DecoderLM): Language model for prediction
@@ -196,7 +196,7 @@ def loss_fn(batch, model):
 def train(model, optimizer, examples, n_samples, collate_fn, batch_size, desc):
     """
     Train the model on provided examples.
-    
+
     Args:
         model (DecoderLM): Model to train
         optimizer (Adam): Optimizer for parameter updates
@@ -239,7 +239,7 @@ def train(model, optimizer, examples, n_samples, collate_fn, batch_size, desc):
 def evaluate_loss(model, examples, batch_size, collate_fn, desc):
     """
     Evaluate model loss on provided examples.
-    
+
     Args:
         model (DecoderLM): Model to evaluate
         examples (list): Evaluation dataset examples
@@ -276,7 +276,7 @@ def generate(
 ):
     """
     Generate target sequences for source sequences using argmax decoding.
-    
+
     Args:
         model (DecoderLM): Model for generation
         examples (list): Dataset examples containing source sequences
@@ -301,11 +301,10 @@ def generate(
 
         while len(token_ids) <= model_max_length:
             # BEGIN ASSIGN3_4
-            # TODO
             # run the model with current token_ids, and predict the next token (gen_id)
             # hint: obtain the logits of next token, and take the argmax.
-            gen_id = 0
-            raise NotImplementedError("Generation Function Not Implemented Yet")
+            logits = model(token_ids).to_numpy()[0][-1]
+            gen_id = max(range(logits.shape[-1]), key=logits.__get__)
             # END ASSIGN3_4
 
             if gen_id == tokenizer.vocab[f'<eos_{tgt_key}>']:
@@ -321,7 +320,7 @@ def generate(
 def evaluate_bleu(examples, gen_sents, tgt_key):
     """
     Evaluate BLEU score for generated sentences against target sentences.
-    
+
     Args:
         examples (list): Dataset examples containing target sentences
         gen_sents (list): Generated sentences to evaluate
@@ -350,7 +349,7 @@ def main(
 ):
     """
     Train and evaluate a decoder-only transformer language model.
-    
+
     Args:
         dataset_name (str): Name of the dataset to use, default 'bbaaaa/iwslt14-de-en-preprocess'
         model_max_length (int): Maximum sequence length, default 40
