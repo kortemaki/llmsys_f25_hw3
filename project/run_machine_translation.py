@@ -306,7 +306,7 @@ def generate(
             logits = model(
                 minitorch.tensor([token_ids], backend=backend)
             ).to_numpy()[0][-1]
-            gen_id = max(range(logits.shape[-1]), key=logits.__get__)
+            gen_id = int(logits.argmax())
             # END ASSIGN3_4
 
             if gen_id == tokenizer.vocab[f'<eos_{tgt_key}>']:
