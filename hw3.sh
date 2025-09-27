@@ -8,7 +8,9 @@
 
 # setup env
 module load cuda/12.6.1
-conda activate 11968-hw3
+module load anaconda3/2024.10-1
+conda env list
+conda activate /jet/home/kmaki/miniconda3/envs/11968-hw3
 nvidia-smi
 
 # run training script
