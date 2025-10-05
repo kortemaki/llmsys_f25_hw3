@@ -238,6 +238,7 @@ class SentenceSentimentTrain:
 
                 # 6
                 optim.step()
+                optim.zero_grad()
 
                 # END ASSIGN1_3
 
